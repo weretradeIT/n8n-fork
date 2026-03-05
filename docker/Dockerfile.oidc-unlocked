@@ -1,0 +1,6 @@
+FROM n8nio/n8n:2.9.0
+
+# Copy our custom patches for OIDC and license bypasses into the container directly
+COPY patches/module-registry-patched.js /usr/local/lib/node_modules/n8n/node_modules/.pnpm/@n8n+backend-common@file+packages+@n8n+backend-common/node_modules/@n8n/backend-common/dist/modules/module-registry.js
+COPY patches/license-state-patched.js /usr/local/lib/node_modules/n8n/node_modules/.pnpm/@n8n+backend-common@file+packages+@n8n+backend-common/node_modules/@n8n/backend-common/dist/license-state.js
+COPY patches/license-patched.js /usr/local/lib/node_modules/n8n/dist/license.js
