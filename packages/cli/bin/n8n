@@ -2,6 +2,15 @@
 
 const path = require('path');
 
+// Polyfill SlowBuffer for legacy dependencies (e.g. avsc) in Node 25+
+if (typeof global.SlowBuffer === 'undefined') {
+	global.SlowBuffer = global.Buffer;
+}
+const buffer = require('buffer');
+if (!buffer.SlowBuffer) {
+	buffer.SlowBuffer = buffer.Buffer;
+}
+
 // Make sure that it also find the config folder when it
 // did get started from another folder that the root one.
 process.env.NODE_CONFIG_DIR = process.env.NODE_CONFIG_DIR || path.join(__dirname, 'config');

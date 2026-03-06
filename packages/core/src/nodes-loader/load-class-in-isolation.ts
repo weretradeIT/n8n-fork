@@ -1,7 +1,19 @@
 import { inTest } from '@n8n/backend-common';
 import { createContext, Script } from 'vm';
 
-const context = createContext({ require });
+const context = createContext({
+	require,
+	process,
+	console,
+	Buffer,
+	SlowBuffer: Buffer,
+	setTimeout,
+	clearTimeout,
+	setInterval,
+	clearInterval,
+	setImmediate,
+	clearImmediate,
+});
 export const loadClassInIsolation = <T>(filePath: string, className: string) => {
 	if (process.platform === 'win32') {
 		filePath = filePath.replace(/\\/g, '/');
