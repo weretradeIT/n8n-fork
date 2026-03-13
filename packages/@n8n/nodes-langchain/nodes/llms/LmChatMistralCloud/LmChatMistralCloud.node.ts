@@ -108,7 +108,7 @@ export class LmChatMistralCloud implements INodeType {
 						property: 'model',
 					},
 				},
-				default: 'mistral-small',
+				default: 'mistral-small-lb',
 			},
 			{
 				displayName: 'Options',
@@ -200,6 +200,11 @@ export class LmChatMistralCloud implements INodeType {
 			onFailedAttempt: makeN8nLlmFailedAttemptHandler(this),
 			metadata: {
 				output_format: isModelWithJSONOutput(modelName) ? 'json' : undefined,
+				trace_name: `n8n_workflow_${this.getWorkflow().id || this.getWorkflow().name}`,
+				generation_name: `n8n_node_${this.getNode().name}`,
+				source_service: 'n8n-mistral-cloud',
+				session_id: this.getExecutionId?.() || 'unknown',
+				tags: ['n8n', 'mistral', this.getNode().type]
 			},
 		});
 
