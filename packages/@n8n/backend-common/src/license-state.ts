@@ -31,17 +31,7 @@ export class LicenseState {
 	 * If the feature is an array of strings, it checks if any of the features are licensed
 	 */
 	isLicensed(feature: BooleanLicenseFeature | BooleanLicenseFeature[]) {
-		this.assertProvider();
-
-		if (typeof feature === 'string') return this.licenseProvider.isLicensed(feature);
-
-		for (const featureName of feature) {
-			if (this.licenseProvider.isLicensed(featureName)) {
-				return true;
-			}
-		}
-
-		return false;
+		return true;
 	}
 
 	getValue<T extends keyof FeatureReturnType>(feature: T): FeatureReturnType[T] {
@@ -193,23 +183,23 @@ export class LicenseState {
 	// --------------------
 
 	getMaxUsers() {
-		return this.getValue('quota:users') ?? UNLIMITED_LICENSE_QUOTA;
+		return UNLIMITED_LICENSE_QUOTA;
 	}
 
 	getMaxActiveWorkflows() {
-		return this.getValue('quota:activeWorkflows') ?? UNLIMITED_LICENSE_QUOTA;
+		return UNLIMITED_LICENSE_QUOTA;
 	}
 
 	getMaxVariables() {
-		return this.getValue('quota:maxVariables') ?? UNLIMITED_LICENSE_QUOTA;
+		return UNLIMITED_LICENSE_QUOTA;
 	}
 
 	getMaxAiCredits() {
-		return this.getValue('quota:aiCredits') ?? 0;
+		return UNLIMITED_LICENSE_QUOTA; // or a high number if it needs actual integer limits
 	}
 
 	getWorkflowHistoryPruneQuota() {
-		return this.getValue('quota:workflowHistoryPrune') ?? UNLIMITED_LICENSE_QUOTA;
+		return UNLIMITED_LICENSE_QUOTA;
 	}
 
 	getInsightsMaxHistory() {
@@ -225,10 +215,10 @@ export class LicenseState {
 	}
 
 	getMaxTeamProjects() {
-		return this.getValue('quota:maxTeamProjects') ?? 0;
+		return -1; // -1 means unlimited based on frontend logic
 	}
 
 	getMaxWorkflowsWithEvaluations() {
-		return this.getValue('quota:evaluations:maxWorkflows') ?? 0;
+		return UNLIMITED_LICENSE_QUOTA;
 	}
 }

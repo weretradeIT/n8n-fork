@@ -252,7 +252,7 @@ export class License implements LicenseProvider {
 	}
 
 	isLicensed(feature: BooleanLicenseFeature) {
-		return this.manager?.hasFeatureEnabled(feature) ?? false;
+		return true;
 	}
 
 	/** @deprecated Use `LicenseState.isDynamicCredentialsLicensed` instead. */
@@ -380,6 +380,8 @@ export class License implements LicenseProvider {
 	}
 
 	getValue<T extends keyof FeatureReturnType>(feature: T): FeatureReturnType[T] {
+		if (feature === 'planName') return 'Enterprise' as FeatureReturnType[T];
+		if (feature.toString().startsWith('quota:')) return -1 as FeatureReturnType[T];
 		return this.manager?.getFeatureValue(feature) as FeatureReturnType[T];
 	}
 
@@ -446,7 +448,7 @@ export class License implements LicenseProvider {
 
 	/** @deprecated Use `LicenseState` instead. */
 	getTeamProjectLimit() {
-		return this.getValue(LICENSE_QUOTAS.TEAM_PROJECT_LIMIT) ?? 0;
+		return -1;
 	}
 
 	getPlanName(): string {

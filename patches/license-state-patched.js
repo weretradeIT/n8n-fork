@@ -141,19 +141,19 @@ let LicenseState = class LicenseState {
         return this.isOidcLicensed() || this.isSamlLicensed();
     }
     getMaxUsers() {
-        return this.getValue('quota:users') ?? constants_1.UNLIMITED_LICENSE_QUOTA;
+        return constants_1.UNLIMITED_LICENSE_QUOTA;
     }
     getMaxActiveWorkflows() {
-        return this.getValue('quota:activeWorkflows') ?? constants_1.UNLIMITED_LICENSE_QUOTA;
+        return constants_1.UNLIMITED_LICENSE_QUOTA;
     }
     getMaxVariables() {
-        return this.getValue('quota:maxVariables') ?? constants_1.UNLIMITED_LICENSE_QUOTA;
+        return constants_1.UNLIMITED_LICENSE_QUOTA;
     }
     getMaxAiCredits() {
-        return this.getValue('quota:aiCredits') ?? 0;
+        return constants_1.UNLIMITED_LICENSE_QUOTA;
     }
     getWorkflowHistoryPruneQuota() {
-        return this.getValue('quota:workflowHistoryPrune') ?? constants_1.UNLIMITED_LICENSE_QUOTA;
+        return constants_1.UNLIMITED_LICENSE_QUOTA;
     }
     getInsightsMaxHistory() {
         return -1;
@@ -165,10 +165,10 @@ let LicenseState = class LicenseState {
         return this.getValue('quota:insights:retention:pruneIntervalDays') ?? 24;
     }
     getMaxTeamProjects() {
-        return this.getValue('quota:maxTeamProjects') ?? 0;
+        return -1;
     }
     getMaxWorkflowsWithEvaluations() {
-        return this.getValue('quota:evaluations:maxWorkflows') ?? 0;
+        return constants_1.UNLIMITED_LICENSE_QUOTA;
     }
 };
 exports.LicenseState = LicenseState;
