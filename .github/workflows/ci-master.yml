@@ -53,6 +53,4 @@ jobs:
       - name: Notify Slack
         if: always()
         run: |
-          curl -sS -o ci-report.sh "https://raw.githubusercontent.com/illforte/weretradeInfantrie_1.0/main/scripts/ci/ci-report.sh"
-          bash ci-report.sh "${{ job.status }}" "${{ github.workflow }}" "${{ github.run_id }}" "${{ secrets.SLACK_DEPLOY_WEBHOOK_URL }}"
-          rm -f ci-report.sh
+          bash .github/scripts/ci-report.sh "${{ job.status }}" "${{ github.workflow }}" "${{ github.run_id }}" "${{ secrets.SLACK_DEPLOY_WEBHOOK_URL }}" || echo "::warning::Slack notification failed (non-blocking)"
