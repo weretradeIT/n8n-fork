@@ -40,6 +40,7 @@ import BinaryDataDisplay from './BinaryDataDisplay.vue';
 import NodeErrorView from './error/NodeErrorView.vue';
 import JsonEditor from '@/features/shared/editors/components/JsonEditor/JsonEditor.vue';
 
+import { useInjectWorkflowId } from '@/app/composables/useInjectWorkflowId';
 import { useRunWorkflow } from '@/app/composables/useRunWorkflow';
 import RunDataPinButton from './RunDataPinButton.vue';
 import { useExternalHooks } from '@/app/composables/useExternalHooks';
@@ -93,7 +94,7 @@ import {
 	N8nText,
 	N8nTooltip,
 } from '@n8n/design-system';
-import { injectWorkflowState } from '@/app/composables/useWorkflowState';
+import { injectWorkflowDocumentStore } from '@/app/stores/workflowDocument.store';
 
 const LazyRunDataTable = defineAsyncComponent(async () => await import('./RunDataTable.vue'));
 const LazyRunDataJson = defineAsyncComponent(async () => await import('./RunDataJson.vue'));
@@ -222,10 +223,11 @@ const search = ref('');
 
 const dataContainerRef = ref<HTMLDivElement>();
 
+const workflowId = useInjectWorkflowId();
 const nodeTypesStore = useNodeTypesStore();
 const ndvStore = useNDVStore();
 const workflowsStore = useWorkflowsStore();
-const workflowState = injectWorkflowState();
+const workflowDocumentStore = injectWorkflowDocumentStore();
 const sourceControlStore = useSourceControlStore();
 const collaborationStore = useCollaborationStore();
 const rootStore = useRootStore();
@@ -251,7 +253,7 @@ const { isSubNodeType } = useNodeType({
 	node,
 });
 
-const isArchivedWorkflow = computed(() => workflowsStore.workflow.isArchived);
+const isArchivedWorkflow = computed(() => workflowDocumentStore?.value?.isArchived ?? false);
 const isReadOnlyRoute = computed(() => route.meta.readOnlyCanvas === true);
 const isWaitNodeWaiting = computed(() => {
 	return (
@@ -388,7 +390,9 @@ const workflowRunErrorAsNodeError = computed(() => {
 	return selfTaskData?.error as NodeError;
 });
 
-const hasRunError = computed(() => node.value && !!workflowRunErrorAsNodeError.value);
+const hasRunError = computed(
+	() => node.value && !isPaneTypeInput.value && !!workflowRunErrorAsNodeError.value,
+);
 
 const executionHints = computed(() => {
 	if (hasNodeRun.value) {
@@ -588,7 +592,7 @@ const parentNodeOutputData = computed(() => {
 
 const parentNodePinnedData = computed(() => {
 	const parentNode = props.workflowObject.getParentNodesByDepth(node.value?.name ?? '')[0];
-	return props.workflowObject.pinData?.[parentNode?.name || ''] ?? [];
+	return workflowDocumentStore?.value?.pinData?.[parentNode?.name || ''] ?? [];
 });
 
 const showPinButton = computed(
@@ -639,7 +643,7 @@ const hasPreviewSchema = asyncComputed(async () => {
 	if (!isSchemaPreviewEnabled.value || props.nodes.length === 0) return false;
 	const nodes = props.nodes
 		.filter((n) => n.depth === 1)
-		.map((n) => workflowsStore.getNodeByName(n.name))
+		.map((n) => workflowDocumentStore?.value?.getNodeByName(n.name) ?? null)
 		.filter(isPresent);
 
 	for (const connectedNode of nodes) {
@@ -880,7 +884,7 @@ function onItemHover(itemIndex: number | null) {
 
 function onClickDataPinningDocsLink() {
 	telemetry.track('User clicked ndv link', {
-		workflow_id: workflowsStore.workflowId,
+		workflow_id: workflowId.value,
 		push_ref: props.pushRef,
 		node_type: activeNode.value?.type,
 		pane: 'output',
@@ -956,7 +960,7 @@ function enterEditMode({ origin }: EnterEditModeArgs) {
 		is_output_present: hasNodeRun.value || pinnedData.hasData.value,
 		view: !hasNodeRun.value && !pinnedData.hasData.value ? 'undefined' : props.displayMode,
 		is_data_pinned: pinnedData.hasData.value,
-		workflow_id: workflowsStore.workflowId,
+		workflow_id: workflowId.value,
 		node_id: activeNode.value?.id,
 	});
 }
@@ -1033,7 +1037,7 @@ async function onTogglePinData({ source }: { source: PinDataSource | UnpinDataSo
 			push_ref: props.pushRef,
 			run_index: props.runIndex,
 			view: !hasNodeRun.value && !pinnedData.hasData.value ? 'none' : props.displayMode,
-			workflow_id: workflowsStore.workflowId,
+			workflow_id: workflowId.value,
 			node_id: activeNode.value?.id,
 		};
 
@@ -1093,7 +1097,7 @@ function showTooMuchData() {
 	userEnabledShowData.value = true;
 	telemetry.track('User clicked ndv button', {
 		node_type: activeNode.value?.type,
-		workflow_id: workflowsStore.workflowId,
+		workflow_id: workflowId.value,
 		push_ref: props.pushRef,
 		pane: props.paneType,
 		type: 'showTooMuchData',
@@ -1120,7 +1124,7 @@ function onCurrentPageChange(value: number) {
 	currentPage.value = value;
 	telemetry.track('User changed ndv page', {
 		node_type: activeNode.value?.type,
-		workflow_id: workflowsStore.workflowId,
+		workflow_id: workflowId.value,
 		push_ref: props.pushRef,
 		pane: props.paneType,
 		page_selected: currentPage.value,
@@ -1143,7 +1147,7 @@ function onPageSizeChange(newPageSize: number) {
 
 	telemetry.track('User changed ndv page size', {
 		node_type: activeNode.value?.type,
-		workflow_id: workflowsStore.workflowId,
+		workflow_id: workflowId.value,
 		push_ref: props.pushRef,
 		pane: props.paneType,
 		page_selected: currentPage.value,
@@ -1176,7 +1180,7 @@ function onDisplayModeChange(newDisplayMode: IRunDataDisplayMode) {
 			previous_view: previous,
 			new_view: newDisplayMode,
 			node_type: activeNode.value.type,
-			workflow_id: workflowsStore.workflowId,
+			workflow_id: workflowId.value,
 			push_ref: props.pushRef,
 			pane: props.paneType,
 		});
@@ -1389,7 +1393,7 @@ function enableNode() {
 			},
 		};
 
-		workflowState.updateNodeProperties(updateInformation);
+		workflowDocumentStore?.value?.updateNodeProperties(updateInformation);
 	}
 }
 
@@ -1522,6 +1526,7 @@ defineExpose({ enterEditMode });
 
 				<N8nIconButton
 					variant="subtle"
+					size="small"
 					v-if="!props.disableEdit && canPinData && !isReadOnlyRoute && !readOnlyEnv"
 					v-show="!editMode.enabled"
 					:title="i18n.baseText('runData.editOutput')"
@@ -2022,8 +2027,6 @@ defineExpose({ enterEditMode });
 	margin-bottom: var(--ndv--spacing);
 	padding: var(--ndv--spacing) var(--spacing--3xs) 0 var(--ndv--spacing);
 	position: relative;
-	overflow-x: auto;
-	overflow-y: hidden;
 	min-height: calc(30px + var(--ndv--spacing));
 	scrollbar-width: thin;
 	container-type: inline-size;
