@@ -73,7 +73,7 @@ export class LicenseState {
 	}
 
 	isOidcLicensed() {
-		// Unlocked in illforte/n8n fork — OIDC enabled for self-hosted use
+		// Unlocked in weretradeIT/n8n-fork fork — OIDC enabled for self-hosted use
 		return true;
 	}
 
@@ -174,7 +174,7 @@ export class LicenseState {
 	}
 
 	isProvisioningLicensed() {
-		// Unlocked alongside OIDC in illforte/n8n fork
+		// Unlocked alongside OIDC in weretradeIT/n8n-fork fork
 		return this.isOidcLicensed() || this.isSamlLicensed();
 	}
 

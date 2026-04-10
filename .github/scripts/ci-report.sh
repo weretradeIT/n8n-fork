@@ -16,7 +16,7 @@ RUN_ID=${3:-"0"}
 AUTH_VAR=${4:-""}
 
 CHANNEL_ID="C0AG3FPQ7QX" # #ci_deploy-reports
-REPO="${GITHUB_REPOSITORY:-"illforte/n8n-fork"}"
+REPO="${GITHUB_REPOSITORY:-"weretradeIT/n8n-fork"}"
 RUN_URL="${GITHUB_SERVER_URL:-"https://github.com"}/${REPO}/actions/runs/${RUN_ID}"
 
 if [[ "$STATUS" == "success" ]]; then
