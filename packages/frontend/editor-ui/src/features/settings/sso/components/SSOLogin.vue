@@ -4,7 +4,6 @@ import { useI18n } from '@n8n/i18n';
 import { useToast } from '@/app/composables/useToast';
 import { useRoute } from 'vue-router';
 
-import { N8nButton } from '@n8n/design-system';
 const i18n = useI18n();
 const ssoStore = useSSOStore();
 const toast = useToast();
@@ -29,14 +28,16 @@ const onSSOLogin = async () => {
 		<div :class="$style.divider">
 			<span>{{ i18n.baseText('sso.login.divider') }}</span>
 		</div>
-		<N8nButton
-			variant="outline"
-			size="large"
-			:label="i18n.baseText('sso.login.button')"
-			@click="onSSOLogin"
-		/>
+		<button class="wt-google-sso-button" @click="onSSOLogin">
+			<div class="wt-google-sso-icon-wrapper">
+				<img class="wt-google-sso-icon" src="../../../../../assets/shared/google.svg" alt="Google" />
+			</div>
+			<span class="wt-google-sso-text">{{ i18n.baseText('sso.login.button') }}</span>
+		</button>
 	</div>
 </template>
+
+<style src="../../../../../assets/shared/google-sso.css"></style>
 
 <style lang="scss" module>
 .ssoLogin {
@@ -71,3 +72,4 @@ const onSSOLogin = async () => {
 	}
 }
 </style>
+

@@ -42,6 +42,7 @@ services:
       - N8N_TRUST_PROXY=true
       - NODE_FUNCTION_ALLOW_BUILTIN=*
       - NODE_ENV=production
+      - N8N_PUBLIC_API_DISABLED=false
       - N8N_SSO_OIDC_LOGIN_ENABLED=true
       - N8N_SSO_REDIRECT_LOGIN_TO_SSO=true
       - N8N_SSO_JUST_IN_TIME_PROVISIONING=true
