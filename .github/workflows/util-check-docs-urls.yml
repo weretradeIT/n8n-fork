@@ -29,4 +29,4 @@ jobs:
       - name: Notify Slack
         if: always()
         run: |
-          bash .github/scripts/ci-report.sh "${{ job.status }}" "${{ github.workflow }}" "${{ github.run_id }}" "${{ secrets.SLACK_DEPLOY_WEBHOOK_URL }}" || echo "::warning::Slack notification failed (non-blocking)"
+          bash .github/scripts/ci-report.sh "${{ job.status }}" "${{ github.workflow }}" "${{ github.run_id }}" "${{ secrets.SLACK_BOT_TOKEN }}" || echo "::warning::Slack notification failed (non-blocking)"
