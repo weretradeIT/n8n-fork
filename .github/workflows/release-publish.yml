@@ -85,7 +85,6 @@ jobs:
 
       - name: Cleanup rc tag
         run: npm dist-tag rm n8n rc
-        continue-on-error: true
 
   publish-to-docker-hub:
     name: Publish to DockerHub

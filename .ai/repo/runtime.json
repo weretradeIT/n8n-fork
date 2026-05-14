@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "runtimeId": "n8n-fork-repo",
+  "name": "ai-n8n-fork-repo",
+  "port": 8404,
+  "pidFile": "{{home}}/.ai/run/n8n-fork-repo-mcp.pid",
+  "logFile": "{{home}}/.ai/run/n8n-fork-repo-mcp.log",
+  "hubScript": "{{workspaceRoot}}/.ai/host/layered-sse-hub.mjs",
+  "context": {
+    "workspaceRoot": "/Users/florian.scheugenpflug/Projekte",
+    "repoRoot": "/Users/florian.scheugenpflug/Projekte/weretradeIT/n8n-fork",
+    "runtimeHostRoot": "/Users/florian.scheugenpflug/Projekte/.ai/host",
+    "sharedMcpProviderRoot": "/Users/florian.scheugenpflug/Projekte/weretradeInfantrie_1.0"
+  },
+  "dotenv": [
+    "{{sharedMcpProviderRoot}}/.env"
+  ],
+  "services": {
+    "docs": {
+      "entry": "{{workspaceRoot}}/.ai/host/run-service-entry.mjs",
+      "env": {
+        "PROJECT_ROOT": "{{repoRoot}}",
+        "REPO_ROOT": "{{repoRoot}}",
+        "MCP_SERVER_NAME": "n8n-fork-docs",
+        "MCP_PROVIDER_ENTRY_RELATIVE": "docs-server/index.js"
+      }
+    },
+    "filesystem-enhanced": {
+      "entry": "{{workspaceRoot}}/.ai/host/run-service-entry.mjs",
+      "env": {
+        "ALLOWED_DIRECTORIES": "{{repoRoot}}",
+        "MCP_SERVER_NAME": "n8n-fork-filesystem",
+        "MCP_PROVIDER_ENTRY_RELATIVE": "filesystem-enhanced/index.js"
+      }
+    }
+  }
+}

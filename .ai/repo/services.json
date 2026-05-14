@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "layer": "repo",
+  "description": "Repo-local MCP services for n8n-fork.",
+  "services": {
+    "docs": {
+      "enabled": true,
+      "transport": "sse",
+      "url": "http://127.0.0.1:8404/sse/docs",
+      "runtime": "n8n-fork-repo",
+      "tags": [
+        "repo",
+        "lazy-singleton",
+        "knowledge"
+      ]
+    },
+    "filesystem-enhanced": {
+      "enabled": true,
+      "transport": "sse",
+      "url": "http://127.0.0.1:8404/sse/filesystem-enhanced",
+      "runtime": "n8n-fork-repo",
+      "tags": [
+        "repo",
+        "lazy-singleton",
+        "filesystem"
+      ]
+    }
+  }
+}
